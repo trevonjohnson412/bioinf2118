@@ -47,16 +47,18 @@ Don't just calculate them.  Write a function to do it.
 
 ```{r}
 SensitivitySpecificity = function(
-  diagnosticModelFamily = Table1_data
+  diagnosticModelFamily = Table1_data,
+  which.positive=c("positive","indeterminate"),
+  which.negative=c("negative")
 ) {
   diagnosticModelFamilyCollapsed = cbind(
-    diagnosticModelFamily[ , 1], 
-    rowSums(diagnosticModelFamily[ , -1])
+    rowSums(diagnosticModelFamily[ , which.negative, drop=F]), 
+    rowSums(diagnosticModelFamily[ , which.positive, drop=F])
   ) 
   dimnames(diagnosticModelFamilyCollapsed)[[2]] = 
-    c('negative','pos or ind')
+    c('negative','positive')
   sens = diagnosticModelFamilyCollapsed[2,2]
-  sens = diagnosticModelFamilyCollapsed['sick', 'pos or ind']
+  sens = diagnosticModelFamilyCollapsed['sick', 'positive']
   spec = diagnosticModelFamilyCollapsed['healthy', 'negative']
   return(c(sensitivity=sens, specificity=spec))  
 }
@@ -70,7 +72,7 @@ Answer1b
 Don't just calculate them.  Write a simple function to do it.
 
 ```{r}
-Answer1c = NULL
+Answer1c = SensitivitySpecificity(diagnosticModelFamily = Table1_data, which.positive = "positive", which.negative = c("negative" , "indeterminate"))
 ```
 
 ### QUESTION 1d: What are the likelihood ratios for the three possible obervations (values of X)?
