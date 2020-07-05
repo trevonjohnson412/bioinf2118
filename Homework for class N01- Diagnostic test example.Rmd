@@ -1,0 +1,125 @@
+---
+title: 'Homework for class N01: Diagnostic test example'
+output:
+  html_document:
+    df_print: paged
+---
+
+# Homework for class N01.
+
+```{r include=FALSE}
+# Removing any previous answers:
+previousAnswerVariables = grep(pattern=('Answer[[:digit:]]+'), ls(), v=T) 
+if(length(previousAnswerVariables) > 0) rm(list=previousAnswerVariables)
+```
+
+#Table 1: diagnosticModelFamily
+
+
+```{r}
+Table1_data = diagnosticModelFamily = 
+  rbind(c(0.95, 0.03, 0.02), 
+        c(0.03, 0.95, 0.02)) 
+parameterSpace = thetaValues = c("healthy","sick")
+sampleSpace = Xvalues = c("negative","positive","indeterminate")
+dimnames(diagnosticModelFamily) = dimnames(Table1_data) = 
+  list(theta=parameterSpace, X=sampleSpace)
+print(diagnosticModelFamily)
+```
+
+### QUESTION 1a:  Which variable, X or theta, are the table entries conditional on?
+(Replace NULL with your answer, in this chunk.)
+
+```{r}
+Answer1a = 'theta'
+```
+Here are the row sums (could be informative!):
+
+```{r}
+print(rowSums(Table1_data))
+print(colSums(Table1_data))
+
+```
+
+
+### QUESTION 1b: What are the sensitivity and specificity of the test, if "indeterminate" is combined with "positive"? 
+Don't just calculate them.  Write a function to do it.
+
+```{r}
+SensitivitySpecificity = function(
+  diagnosticModelFamily = Table1_data
+) {
+  diagnosticModelFamilyCollapsed = cbind(
+    diagnosticModelFamily[ , 1], 
+    rowSums(diagnosticModelFamily[ , -1])
+  ) 
+  dimnames(diagnosticModelFamilyCollapsed)[[2]] = 
+    c('negative','pos or ind')
+  sens = diagnosticModelFamilyCollapsed[2,2]
+  sens = diagnosticModelFamilyCollapsed['sick', 'pos or ind']
+  spec = diagnosticModelFamilyCollapsed['healthy', 'negative']
+  return(c(sensitivity=sens, specificity=spec))  
+}
+
+Answer1b = SensitivitySpecificity()
+Answer1b
+```
+
+
+### QUESTION 1c: What are the sensitivity and specificity of the test, if "indeterminate" is combined with "negative"? 
+Don't just calculate them.  Write a simple function to do it.
+
+```{r}
+Answer1c = NULL
+```
+
+### QUESTION 1d: What are the likelihood ratios for the three possible obervations (values of X)?
+
+```{r}
+Answer1d = NULL
+```
+
+
+#Table 2:  Joint probability table
+
+To get the joint probability TABLE, we multiply the Table 1 top row by the prevalence, and the bottom row by 1 - prevalence.
+
+```{r}
+prior = c(0.9, 0.1)
+Table_2_data = diagnosticJointTable = 
+  matrix(prior, nrow=2, ncol=3) *
+    diagnosticModelFamily
+print(diagnosticJointTable)
+```
+
+QUESTION 2a:  Write code that verifies that all the probabilities in diagnosticJointTable add to 1.
+
+```{r}
+Answer2a = NULL
+```
+
+
+QUESTION 2b:  Write a function "joint_probability" that takes as its arguments an outcome X  and a state-of-nature, and returns the probability of that outcome.
+
+Example of use: joint_probability("negative", "healthy")
+
+HINT:  It should be just ONE LINE, very simple. Use indexing. 
+Type help('[') at the console to learn about indexing.
+
+
+
+```{r}
+Answer2b = NULL
+```
+
+
+
+# Report of Answers:
+
+```{r}
+AnswerVariables = grep(pattern=('Answer[[:digit:]]+'), ls(), v=T) 
+print(AnswerVariables)
+Answers = sapply(AnswerVariables, get)
+print(Answers)
+```
+
