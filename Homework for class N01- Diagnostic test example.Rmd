@@ -78,16 +78,17 @@ Answer1c = SensitivitySpecificity(diagnosticModelFamily = Table1_data, which.pos
 ### QUESTION 1d: What are the likelihood ratios for the three possible obervations (values of X)?
 
 ```{r}
-Answer1d = NULL
+Answer1d = Table1_data[2, ]/Table1_data[1, ]
+Answer1d
 ```
 
 
 #Table 2:  Joint probability table
 
-To get the joint probability TABLE, we multiply the Table 1 top row by the prevalence, and the bottom row by 1 - prevalence.
+To get the joint probability TABLE, we multiply the Table 1 bottom row by the prevalence, and the top row by 1 - prevalence.
 
 ```{r}
-prior = c(0.9, 0.1)
+prior = c(healthy=0.9, sick=0.1)
 Table_2_data = diagnosticJointTable = 
   matrix(prior, nrow=2, ncol=3) *
     diagnosticModelFamily
@@ -97,7 +98,7 @@ print(diagnosticJointTable)
 QUESTION 2a:  Write code that verifies that all the probabilities in diagnosticJointTable add to 1.
 
 ```{r}
-Answer2a = NULL
+Answer2a = sum(Table_2_data = diagnosticJointTable)
 ```
 
 
@@ -111,7 +112,10 @@ Type help('[') at the console to learn about indexing.
 
 
 ```{r}
-Answer2b = NULL
+Answer2b = joint_probability=function(X,theta){
+  diagnosticJointTable[theta, X]
+}
+joint_probability("negative", "healthy")
 ```
 
 
